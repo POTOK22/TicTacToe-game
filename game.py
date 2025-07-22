@@ -18,8 +18,15 @@ y_offset = 125
 # True -> Blue -> X, False -> Red -> O
 who = True
 who_won = 0
+counter = 0
 
-# Improved spacing
+# TODO
+# x_text = font.render("X", 0, (255, 255, 255))
+# x_text_rect = x_text.get_rect()
+
+# o_text = font.render("O", 0, (255, 255, 255))
+# o_text_rect = o_text.get_rect()
+
 for i in range(0, 9):
     x_offset = 175 + ((i%3)*325)
     if i % 3 == 0 and i != 0:
@@ -27,7 +34,10 @@ for i in range(0, 9):
         y_offset = 125 + (i*75)
     square = pygame.Rect((0, 0, 300, 200))
     square.center = (x_offset, y_offset)
-    block_list.append([square, (255, 255, 255), 0])
+    # TODO
+    # x_text_rect.center = (x_offset, y_offset)
+    # o_text_rect.center = (x_offset, y_offset)
+    block_list.append([square, (255, 255, 255), 0, False])
 
 while True:
     for event in pygame.event.get():
@@ -39,20 +49,25 @@ while True:
                 for block in block_list:
                     if block[0].collidepoint(event.pos):
                         # X starts
-                        if who:
-                            block[1] = (0, 0, 255)
-                            block[2] = 1
-                            who = False
-                        else:
-                            block[1] = (255, 0, 0)
-                            block[2] = 2
-                            who = True
+                        if not block[3]:
+                            if who:
+                                block[1] = (0, 0, 255)
+                                block[2] = 1
+                                block[3] = True
+                                who = False
+                            else:
+                                block[1] = (255, 0, 0)
+                                block[2] = 2
+                                block[3] = True
+                                who = True
         else:
             if event.type == pygame.MOUSEBUTTONDOWN:
                 game_active = True
+                counter = 0
                 for block in block_list:
                     block[1] = (255, 255, 255)
                     block[2] = 0
+                    block[3] = False
         if game_active:
             screen.fill((189, 183, 107))
             for block in block_list:
@@ -60,75 +75,63 @@ while True:
             # For X
             # Rows
             if block_list[0][2] == 1 and block_list[1][2] == 1 and block_list[2][2] == 1:
-                print("X won")
                 who_won = 1
                 game_active = False
             if block_list[3][2] == 1 and block_list[4][2] == 1 and block_list[5][2] == 1:
-                print("X won")
                 who_won = 1
                 game_active = False
             if block_list[6][2] == 1 and block_list[7][2] == 1 and block_list[8][2] == 1:
-                print("X won")
                 who_won = 1
                 game_active = False
             # Columns
             if block_list[0][2] == 1 and block_list[3][2] == 1 and block_list[6][2] == 1:
-                print("X won")
                 who_won = 1
                 game_active = False
             if block_list[1][2] == 1 and block_list[4][2] == 1 and block_list[7][2] == 1:
-                print("X won")
                 who_won = 1
                 game_active = False
             if block_list[2][2] == 1 and block_list[5][2] == 1 and block_list[8][2] == 1:
-                print("X won")
                 who_won = 1
                 game_active = False
             # Diagonals
             if block_list[0][2] == 1 and block_list[4][2] == 1 and block_list[8][2] == 1:
-                print("X won")
                 who_won = 1
                 game_active = False
             if block_list[2][2] == 1 and block_list[4][2] == 1 and block_list[6][2] == 1:
-                print("X won")
                 who_won = 1
                 game_active = False
             # For O
             # Rows
             if block_list[0][2] == 2 and block_list[1][2] == 2 and block_list[2][2] == 2:
-                print("O won")
                 who_won = 2
                 game_active = False
             if block_list[3][2] == 2 and block_list[4][2] == 2 and block_list[5][2] == 2:
-                print("O won")
                 who_won = 2
                 game_active = False
             if block_list[6][2] == 2 and block_list[7][2] == 2 and block_list[8][2] == 2:
-                print("O won")
                 who_won = 2
                 game_active = False
             # Columns
             if block_list[0][2] == 2 and block_list[3][2] == 2 and block_list[6][2] == 2:
-                print("O won")
                 who_won = 2
                 game_active = False
             if block_list[1][2] == 2 and block_list[4][2] == 2 and block_list[7][2] == 2:
-                print("O won")
                 who_won = 2
                 game_active = False
             if block_list[2][2] == 2 and block_list[5][2] == 2 and block_list[8][2] == 2:
-                print("O won")
                 who_won = 2
                 game_active = False
             # Diagonals
             if block_list[0][2] == 2 and block_list[4][2] == 2 and block_list[8][2] == 2:
-                print("O won")
                 who_won = 2
                 game_active = False
             if block_list[2][2] == 2 and block_list[4][2] == 2 and block_list[6][2] == 2:
-                print("O won")
                 who_won = 2
                 game_active = False
+            #TODO
+            # if :
+            #     who_won = 3
+            #     game_active = False
         else:
             screen.fill((189, 183, 107))
 
@@ -144,6 +147,9 @@ while True:
             o_won_message = font.render("O won!", 0, (255, 255, 255))
             o_won_message_rect = x_won_message.get_rect(center = (500, 250))
 
+            tie_message = font.render("Tie!", 0, (255, 255, 255))
+            tie_message_rect = tie_message.get_rect(center = (500, 250))
+
             try_again_message = font.render("Click mouse to try again", 0, (255, 255, 255))
             try_again_message_rect = try_again_message.get_rect(center = (500, 450))
             
@@ -154,9 +160,13 @@ while True:
                 screen.blit(title_message, title_message_rect)
                 screen.blit(x_won_message, x_won_message_rect)
                 screen.blit(try_again_message, try_again_message_rect)
-            else:
+            elif who_won == 2:
                 screen.blit(title_message, title_message_rect)
                 screen.blit(o_won_message, o_won_message_rect)
+                screen.blit(try_again_message, try_again_message_rect)
+            else:
+                screen.blit(title_message, title_message_rect)
+                screen.blit(tie_message, tie_message_rect)
                 screen.blit(try_again_message, try_again_message_rect)
 
     pygame.display.update()
